@@ -1,8 +1,12 @@
 import React from "react";
+import GlobalStyle from "./utils/GlobalStyleSheet/GlobalStyleSheet";
 
 function App() {
   return (
-    <div>Radhe Radhe</div>
+    <>
+      <GlobalStyle />
+      <div>Radhe Radhe</div>
+    </>
   );
 }
 

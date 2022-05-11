@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import RemainingHours from '../components/RemainingHours';
 import Time from '../components/Time';
 
 const HomeContainer = styled.section`
@@ -36,6 +37,9 @@ const Home = () => {
             </nav>
             <div className="home_container_time_block">
                 <Time />
+                <div className="home_container_time_block_remaining_hour">
+                    <p>Remaing hours <span><RemainingHours /></span></p>
+                </div>
             </div>
             <div className="home_container">
                 <div className="home_container_heading">

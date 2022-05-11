@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Time from '../components/Time';
 
 const HomeContainer = styled.section`
 background-color: #001D6E;
@@ -13,6 +14,11 @@ nav {
     .logo{
         font-size: max(2vw, 2rem);
     }
+}
+.home_container_time_block{
+    text-align: center;
+    padding: 2em;
+    font-size: max(3vw, 3rem);
 }
 .home_container{
     height: max(100vh, 800px);
@@ -28,7 +34,9 @@ const Home = () => {
             <nav>
                 <h1 className="logo">JAR</h1>
             </nav>
-
+            <div className="home_container_time_block">
+                <Time />
+            </div>
             <div className="home_container">
                 <div className="home_container_heading">
                     <h1>Time to put things inside the <span>JAR</span></h1>

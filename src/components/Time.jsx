@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 const Time = () => {
 
     let getTime = new Date();
-    const [currentTime, setCurrentTime] =  React.useState(getTime.toLocaleDateString());
+    const [currentTime, setCurrentTime] =  useState(getTime.toLocaleDateString());
     useEffect(() => {
         const timer = setTimeout(() => {
             setCurrentTime(getTime.toLocaleTimeString());
@@ -13,7 +13,7 @@ const Time = () => {
         return () => clearTimeout(timer);
 })
 return (
-    <div>{currentTime}</div>
+    <>{currentTime}</>
 )
 }
 

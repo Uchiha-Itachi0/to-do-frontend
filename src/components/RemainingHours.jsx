@@ -10,7 +10,7 @@ const RemainingHours = () => {
         return () => clearTimeout(timer);
     })
   return (
-    <div>{getHour}</div>
+    <>{getHour}</>
   )
 }
 

@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import RemainingHours from '../components/RemainingHours';
 import Time from '../components/Time';
+import Button from "../components/Button";
 
 const HomeContainer = styled.section`
-background-color: #001D6E;
+background-color: #363062;
 min-height: max-content;
 color: #FFFF;
+padding: 0 1rem;
 
 nav {
     position: relative;
@@ -18,14 +20,90 @@ nav {
 }
 .home_container_time_block{
     text-align: center;
-    padding: 2em;
-    font-size: max(3vw, 3rem);
+    padding: 1em;
+    font-size: max(5vw, 3rem);
+
+    .home_container_time_block_remaining_hour{
+        font-size: max(1.5vw, 1.5rem);
+        span{
+            font-size: max(2vw, 2rem);
+        }
+    }
 }
 .home_container{
-    height: max(100vh, 800px);
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 2rem;
+
+    .home_container_heading{
+        margin-bottom: 2rem;
+        text-align: center;
+        h1{
+            font-size: max(3vw, 3rem);
+            font-style: italic;
+            span{
+                display: block;
+                margin-top: 1rem;
+                font-size: max(4vw, 4rem)
+        }
+        }
+
+    }
+}
+
+.home_container_sign_up_button{
+    button{
+        background: transparent;
+        color: white;
+        transition: 200ms linear;
+
+        &:hover{
+            background: white;
+            color: black;
+        }
+    }
+}
+
+@media only screen and (max-width: 720px){
+    nav{
+        padding: 1em .4em;
+        .logo{
+            font-size: 8vw;
+        }
+    }
+    .home_container_time_block{
+        font-size: 8vw;
+        margin: 4rem 0;
+        .home_container_time_block_remaining_hour{
+            font-size: 5vw;
+            span{
+                font-size: 6vw;
+            }
+        }
+    }
+    .home_container{
+        justify-content: center;
+        .home_container_heading{
+            h1{
+                font-size: 7vw;
+                span{
+                    font-size: 10vw;
+                }
+
+            }
+        }
+    }
+
+    button{
+        font-size: 5vw;
+    }
+}
+
+@media only screen and (max-width: 415px){
+    .home_container_time_block{
+        margin: 4rem 0;
+    }
 }
 
 `;
@@ -38,18 +116,19 @@ const Home = () => {
             <div className="home_container_time_block">
                 <Time />
                 <div className="home_container_time_block_remaining_hour">
-                    <p>Remaing hours <span><RemainingHours /></span></p>
+                    <p>Remaing hours: <span><RemainingHours /></span> Hrs</p>
                 </div>
             </div>
             <div className="home_container">
                 <div className="home_container_heading">
-                    <h1>Time to put things inside the <span>JAR</span></h1>
+                    <h1>"Free up your mental space by putting all your task inside the
+                        <span> JAR"</span></h1>
                 </div>
                 <div className="home_container_sign_up_button">
-                    <button>Sign up</button>
+                    <Button>Sign up</Button>
                 </div>
                 <div className="home_container_log_in_button">
-                    <button>Log in</button>
+                    <Button>Log in</Button>
                 </div>
             </div>
         </HomeContainer>

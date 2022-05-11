@@ -1,11 +1,12 @@
 import React from "react";
+import Home from "./pages/Home";
 import GlobalStyle from "./utils/GlobalStyleSheet/GlobalStyleSheet";
 
 function App() {
   return (
     <>
       <GlobalStyle />
-      <div>Radhe Radhe</div>
+      <Home />
     </>
   );
 }

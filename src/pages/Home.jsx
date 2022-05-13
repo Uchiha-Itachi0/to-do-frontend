@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import RemainingHours from '../components/RemainingHours';
 import Time from '../components/Time';
 import Button from "../components/Button";
-
+import { useSelector, useDispatch } from "react-redux";
+import { SHOW_MODAL } from '../redux/Slice/modalSlice';
+import Modal from '../components/modal';
 const HomeContainer = styled.section`
 background-color: #363062;
 min-height: max-content;
@@ -103,8 +105,19 @@ nav {
 
 `;
 const Home = () => {
+
+    const showModal = useSelector(state => state.modal.showModal);
+    const dispatch = useDispatch();
+    const clickHandler = () => {
+        dispatch(SHOW_MODAL());
+    }
+    const modalClickHandler = () => {
+        dispatch(SHOW_MODAL());
+    }
+
     return (
         <HomeContainer>
+        {showModal ? <Modal modalClickHandler={modalClickHandler}/>: null}
             <nav>
                 <h1 className="logo">JAR</h1>
             </nav>
@@ -120,10 +133,10 @@ const Home = () => {
                         <span> JAR"</span></h1>
                 </div>
                 <div className="home_container_sign_up_button">
-                    <Button>Sign up</Button>
+                    <Button clickHandler={clickHandler}>Sign up</Button>
                 </div>
                 <div className="home_container_log_in_button">
-                    <Button>Log in</Button>
+                    <Button clickHandler={clickHandler} >Log in</Button>
                 </div>
             </div>
         </HomeContainer>

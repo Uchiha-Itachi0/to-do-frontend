@@ -10,10 +10,11 @@ const ButtonStyle = styled.button`
     border: 2px solid #fff;
 `;
 const Button = ({
-    children
+    children,
+    clickHandler
 }) => {
     return (
-        <ButtonStyle>{children}</ButtonStyle>
+        <ButtonStyle onClick={clickHandler}>{children}</ButtonStyle>
     )
 }
 

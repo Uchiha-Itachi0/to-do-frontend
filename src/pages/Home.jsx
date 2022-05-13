@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import RemainingHours from '../components/RemainingHours';
 import Time from '../components/Time';
@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { SHOW_MODAL } from '../redux/Slice/modalSlice';
 import Modal from '../components/modal';
+import Form from '../components/form/Form';
 const HomeContainer = styled.section`
 background-color: #363062;
 min-height: max-content;
@@ -108,16 +109,20 @@ const Home = () => {
 
     const showModal = useSelector(state => state.modal.showModal);
     const dispatch = useDispatch();
+    const [showForm, setShowForm] = useState(false);
     const clickHandler = () => {
         dispatch(SHOW_MODAL());
+        setShowForm(true);
     }
     const modalClickHandler = () => {
         dispatch(SHOW_MODAL());
+        setShowForm(false);
     }
 
     return (
         <HomeContainer>
         {showModal ? <Modal modalClickHandler={modalClickHandler}/>: null}
+        {showForm ? <Form /> : null}
             <nav>
                 <h1 className="logo">JAR</h1>
             </nav>

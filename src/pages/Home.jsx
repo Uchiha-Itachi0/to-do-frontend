@@ -35,6 +35,7 @@ nav {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
+    padding: 2em;
 
     .home_container_heading{
         margin-bottom: 2rem;
@@ -97,12 +98,6 @@ nav {
 
     button{
         font-size: 5vw;
-    }
-}
-
-@media only screen and (max-width: 415px){
-    .home_container_time_block{
-        margin: 4rem 0;
     }
 }
 

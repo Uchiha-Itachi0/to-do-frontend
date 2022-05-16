@@ -15,7 +15,7 @@ const Button = ({
     buttonDisable
 }) => {
     return (
-        <ButtonStyle onClick={() => clickHandler()} disabled={buttonDisable}>{children}</ButtonStyle>
+        <ButtonStyle onClick={(e) => clickHandler(e)} disabled={buttonDisable}>{children}</ButtonStyle>
     )
 }
 

@@ -143,8 +143,6 @@ const SignUp = ({
                 }
             });
         }
-
-
     };
     useEffect(() => {
         if (validation.EMAIL(inputValue.signUp.email) && validation.MIN_LENGTH(inputValue.signUp.name)
@@ -160,8 +158,13 @@ const SignUp = ({
         }
     }, [inputValue]);
 
-    const submitClickHandler = () => {
-        console.log("not disable");
+    const submitClickHandler = (e) => {
+        if(e.target.innerText === "Sign Up"){
+            console.log("Thanks for signing up");
+        }
+        else if(e.target.innerText === "Login"){
+            console.log("Welcome back");
+        }
     }
     return (
         <SignUpContainer>
@@ -195,7 +198,7 @@ const SignUp = ({
                 }
             </div>
             <div className="sign_up_container_button">
-                <Button buttonDisable={buttonDisable} clickHandler={() => submitClickHandler()}>{buttonText}</Button>
+                <Button buttonDisable={buttonDisable}  clickHandler={(e) => submitClickHandler(e)}>{buttonText}</Button>
             </div>
             <div className="sign_up_container_footer">
                 <p className="sign_up_container_footer_login"

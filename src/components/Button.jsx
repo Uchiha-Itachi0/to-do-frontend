@@ -14,7 +14,7 @@ const Button = ({
     clickHandler
 }) => {
     return (
-        <ButtonStyle onClick={clickHandler}>{children}</ButtonStyle>
+        <ButtonStyle onClick={() => clickHandler()}>{children}</ButtonStyle>
     )
 }
 

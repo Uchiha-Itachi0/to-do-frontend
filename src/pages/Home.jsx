@@ -39,7 +39,6 @@ nav {
     align-items: center;
     gap: 2rem;
     padding: 2em;
-
     .home_container_heading{
         margin-bottom: 2rem;
         text-align: center;
@@ -109,20 +108,24 @@ const Home = () => {
 
     const showModal = useSelector(state => state.modal.showModal);
     const dispatch = useDispatch();
-    const [showForm, setShowForm] = useState(false);
-    const clickHandler = () => {
+    const [showLogin, setLogin] = useState(false);
+    const clickHandler = (whichForm) => {
         dispatch(SHOW_MODAL());
-        setShowForm(true);
+        if(whichForm === "login"){
+            setLogin(true);
+        }
+        else{
+            setLogin(false);
+        }
     }
     const modalClickHandler = () => {
         dispatch(SHOW_MODAL());
-        setShowForm(false);
     }
 
     return (
         <HomeContainer>
-        {showModal ? <Modal modalClickHandler={modalClickHandler}/>: null}
-        {showForm ? <Form /> : null}
+            {showModal ? <Modal modalClickHandler={modalClickHandler} /> : null}
+            <Form showLogin = {showLogin} setLogin = {setLogin}/>
             <nav>
                 <h1 className="logo">JAR</h1>
             </nav>
@@ -138,10 +141,10 @@ const Home = () => {
                         <span> JAR"</span></h1>
                 </div>
                 <div className="home_container_sign_up_button">
-                    <Button clickHandler={clickHandler}>Sign up</Button>
+                    <Button clickHandler={() => clickHandler("signUp")}>Sign up</Button>
                 </div>
                 <div className="home_container_log_in_button">
-                    <Button clickHandler={clickHandler} >Log in</Button>
+                    <Button clickHandler={() => clickHandler("login")} >Log in</Button>
                 </div>
             </div>
         </HomeContainer>

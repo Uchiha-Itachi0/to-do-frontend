@@ -63,10 +63,9 @@ width: max(30vw, 300px);
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: .5em;
+    gap: max(.5vw, 1em);
     padding: 1em;
     border-top: 2px solid #363062;
-
     .sign_up_container_footer_login{
         display: flex;
         align-items: center;
@@ -74,34 +73,65 @@ width: max(30vw, 300px);
         color: #363062;
         cursor: pointer;
         font-weight: 600;
+        font-size: max(1.5vw, 1.5rem);
+        text-align: center;
+        position: relative;
+        z-index: 3;
         span{
             svg{
-                font-size: 2em;
+                font-size: max(1.5vw, 2rem);
             }
         }
     }
-
-
+}
+@media only screen and (max-width: 390px){
+    width: 80vw;
+    .sign_up_container_button{
+        button{
+            font-size: 6vw;
+        }
+    }
 }
 `;
-const SignUp = () => {
+const SignUp = ({
+    heading,
+    totalInputFields,
+    totalPasswordFields,
+    buttonText,
+    footerText,
+    formFlipHandler
+}) => {
+
     return (
         <SignUpContainer>
             <h1 className="sign_up_container_logo">JAR</h1>
             <div className="sign_up_container_heading">
-                <span>Sign Up</span>
+                <span>{heading}</span>
             </div>
             <div className="sign_up_container_input">
-                <InputField inputType="text" inputText="userName" />
-                <InputField inputType="text" inputText="email" />
-                <PasswordField inputText="Password" />
-                <PasswordField inputText="Confirm password" />
+                {
+                    totalInputFields.map((value, index) => {
+                        return <InputField
+                            key={index + value.inputText}
+                            inputType="text"
+                            inputText={value.inputText} />
+                    })
+                }
+                {
+                    totalPasswordFields.map((value, index) => {
+                        return <PasswordField
+                            key={index + value.inputText}
+                            inputText={value.inputText} />
+                    })
+                }
             </div>
             <div className="sign_up_container_button">
-                <Button>Sign Up</Button>
+                <Button>{buttonText}</Button>
             </div>
             <div className="sign_up_container_footer">
-                <p className="sign_up_container_footer_login"> Already have an account? Login<span><ArrowRightAltIcon classname="sign_up_container_footer_arrow" /></span></p>
+                <p className="sign_up_container_footer_login"
+                    onClick={() => formFlipHandler()}
+                >{footerText}<span><ArrowRightAltIcon className="sign_up_container_footer_arrow" /></span></p>
             </div>
 
 

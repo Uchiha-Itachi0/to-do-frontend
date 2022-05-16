@@ -51,19 +51,19 @@ const Form = ({
     const showModal = useSelector(state => state.modal.showModal);
 
     const totalInputFieldsSignUp = [
-        { inputText: "name" },
-        { inputText: "email" }
+        { inputText: "name", formName: "signUp" },
+        { inputText: "email", formName: "signUp" }
     ]
     const totalPasswordFieldsSignUp = [
-        { inputText: "password" },
-        { inputText: "confirmPassword" }
+        { inputText: "password", formName: "signUp" },
+        { inputText: "confirmPassword", formName: "signUp" }
     ]
 
     const totalInputFieldsLogin = [
-        { inputText: "email" }
+        { inputText: "email", formName: "logIn"}
     ]
     const totalPasswordFieldsLogin = [
-        { inputText: "password" }
+        { inputText: "password", formName: "logIn" }
     ]
 
     const formFlipHandler = () => {

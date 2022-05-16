@@ -17,7 +17,8 @@ position: relative;
 const PasswordField = ({
     inputText,
     inputValue,
-    inputChangeHandler
+    inputChangeHandler,
+    formName
 
 }) => {
     const [inputType, setInputType] = useState('password');
@@ -32,7 +33,9 @@ const PasswordField = ({
     return (
         <PasswordFieldContainer>
             <InputField inputType={inputType} inputText={inputText}
-                inputValue={inputValue} inputChangeHandler={inputChangeHandler} />
+                inputValue={inputValue} inputChangeHandler={inputChangeHandler} 
+                    formName={formName}
+                />
             <span className="password_container_icon"
                 onClick={eyeClickHandler}>{
                     inputType === 'password' ? <VisibilityIcon /> : <VisibilityOffIcon />

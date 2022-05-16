@@ -108,27 +108,54 @@ const SignUp = ({
     formFlipHandler
 }) => {
     const [inputValue, setInputValue] = useState({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: ""
+        signUp: {
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+        },
+        logIn: {
+            email: "",
+            password: ""
+        }
+
     });
     const [buttonDisable, setButtonDisable] = useState(true);
     const inputChangeHandler = (e) => {
         const value = e.target.value;
-        setInputValue({
-            ...inputValue,
-            [e.target.name]: value
-        });
+        const formName = e.target.name.split(" ")[1];
+        const name = e.target.name.split(" ")[0];
+        if(formName === "signUp"){
+            setInputValue({
+                ...inputValue,
+                signUp: {
+                    ...inputValue.signUp,
+                    [name]: value
+                }
+            });
+        }
+        else if(formName === "logIn"){
+            setInputValue({
+                ...inputValue,
+                logIn: {
+                    ...inputValue.logIn,
+                    [name]: value
+                }
+            });
+        }
+
 
     };
     useEffect(() => {
-        if (validation.EMAIL(inputValue.email) && validation.MIN_LENGTH(inputValue.name)
-            && validation.PASSWORD_LENGTH(inputValue.password) &&
-            validation.PASSWORD_MATCH(inputValue.password, inputValue.confirmPassword)) {
+        if (validation.EMAIL(inputValue.signUp.email) && validation.MIN_LENGTH(inputValue.signUp.name)
+            && validation.PASSWORD_LENGTH(inputValue.signUp.password) &&
+            validation.PASSWORD_MATCH(inputValue.signUp.password, inputValue.signUp.confirmPassword)) {
             setButtonDisable(false);
         }
-        else {
+        else if(validation.EMAIL(inputValue.logIn.email) && validation.PASSWORD_LENGTH(inputValue.logIn.password)) {
+            setButtonDisable(false);
+        }
+        else{
             setButtonDisable(true);
         }
     }, [inputValue]);
@@ -151,6 +178,7 @@ const SignUp = ({
                             inputText={value.inputText}
                             inputValue={inputValue}
                             inputChangeHandler={inputChangeHandler}
+                            formName={value.formName}
                         />
                     })
                 }
@@ -161,6 +189,7 @@ const SignUp = ({
                             inputText={value.inputText}
                             inputValue={inputValue}
                             inputChangeHandler={inputChangeHandler}
+                            formName={value.formName}
                         />
                     })
                 }

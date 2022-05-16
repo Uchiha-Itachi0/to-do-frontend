@@ -31,11 +31,12 @@ const InputField = ({
     inputType,
     inputText,
     inputValue,
-    inputChangeHandler
+    inputChangeHandler,
+    formName
 }) => {
     return (
         <InputFieldContainer>
-            <input type={inputType} placeholder=" " name={inputText} value={inputValue[inputText]} onChange={(e) => inputChangeHandler(e)} />
+            <input type={inputType} placeholder=" " name={inputText + ` ${formName}`} value={inputValue[formName][inputText]} onChange={(e) => inputChangeHandler(e)} />
             <span>{inputText}</span>
         </InputFieldContainer>
     )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from "styled-components";
 
 const InputFieldContainer = styled.div`
@@ -29,16 +29,16 @@ span{
 
 const InputField = ({
     inputType,
-    inputText
+    inputText,
+    inputValue,
+    inputChangeHandler
 }) => {
-    const [inputValue, setInputValue] = useState("");
-    const inputChangeHandler = (e) => setInputValue(e.target.value);
-  return (
-    <InputFieldContainer>
-        <input type={inputType} placeholder=" " value={inputValue} onChange={(e) => inputChangeHandler(e)}/>
-        <span>{inputText}</span>
-    </InputFieldContainer>
-  )
+    return (
+        <InputFieldContainer>
+            <input type={inputType} placeholder=" " name={inputText} value={inputValue[inputText]} onChange={(e) => inputChangeHandler(e)} />
+            <span>{inputText}</span>
+        </InputFieldContainer>
+    )
 }
 
 export default InputField

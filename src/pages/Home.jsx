@@ -141,10 +141,10 @@ const Home = () => {
                         <span> JAR"</span></h1>
                 </div>
                 <div className="home_container_sign_up_button">
-                    <Button clickHandler={() => clickHandler("signUp")}>Sign up</Button>
+                    <Button buttonDisable={false} clickHandler={() => clickHandler("signUp")}>Sign up</Button>
                 </div>
                 <div className="home_container_log_in_button">
-                    <Button clickHandler={() => clickHandler("login")} >Log in</Button>
+                    <Button buttonDisable={false}  clickHandler={() => clickHandler("login")} >Log in</Button>
                 </div>
             </div>
         </HomeContainer>

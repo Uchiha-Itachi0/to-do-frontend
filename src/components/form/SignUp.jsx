@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from "styled-components";
 import Button from '../Button';
 import InputField from './InputField';
 import PasswordField from './passwordField';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import validation from "../../utils/validation";
 
 const SignUpContainer = styled.div`
 padding: 1em;
@@ -56,6 +57,11 @@ width: max(30vw, 300px);
             background: transparent;
             color: #000;
         }
+        &:disabled{
+            background: rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.5);
+            cursor: not-allowed;
+        }
     }
 }
 .sign_up_container_footer{
@@ -101,7 +107,35 @@ const SignUp = ({
     footerText,
     formFlipHandler
 }) => {
+    const [inputValue, setInputValue] = useState({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+    });
+    const [buttonDisable, setButtonDisable] = useState(true);
+    const inputChangeHandler = (e) => {
+        const value = e.target.value;
+        setInputValue({
+            ...inputValue,
+            [e.target.name]: value
+        });
 
+    };
+    useEffect(() => {
+        if (validation.EMAIL(inputValue.email) && validation.MIN_LENGTH(inputValue.name)
+            && validation.PASSWORD_LENGTH(inputValue.password) &&
+            validation.PASSWORD_MATCH(inputValue.password, inputValue.confirmPassword)) {
+            setButtonDisable(false);
+        }
+        else {
+            setButtonDisable(true);
+        }
+    }, [inputValue]);
+
+    const submitClickHandler = () => {
+        console.log("not disable");
+    }
     return (
         <SignUpContainer>
             <h1 className="sign_up_container_logo">JAR</h1>
@@ -114,19 +148,25 @@ const SignUp = ({
                         return <InputField
                             key={index + value.inputText}
                             inputType="text"
-                            inputText={value.inputText} />
+                            inputText={value.inputText}
+                            inputValue={inputValue}
+                            inputChangeHandler={inputChangeHandler}
+                        />
                     })
                 }
                 {
                     totalPasswordFields.map((value, index) => {
                         return <PasswordField
                             key={index + value.inputText}
-                            inputText={value.inputText} />
+                            inputText={value.inputText}
+                            inputValue={inputValue}
+                            inputChangeHandler={inputChangeHandler}
+                        />
                     })
                 }
             </div>
             <div className="sign_up_container_button">
-                <Button>{buttonText}</Button>
+                <Button buttonDisable={buttonDisable} clickHandler={() => submitClickHandler()}>{buttonText}</Button>
             </div>
             <div className="sign_up_container_footer">
                 <p className="sign_up_container_footer_login"

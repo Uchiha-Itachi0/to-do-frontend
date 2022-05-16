@@ -15,7 +15,10 @@ position: relative;
 }
 `;
 const PasswordField = ({
-    inputText
+    inputText,
+    inputValue,
+    inputChangeHandler
+
 }) => {
     const [inputType, setInputType] = useState('password');
     const eyeClickHandler = () => {
@@ -28,7 +31,8 @@ const PasswordField = ({
     }
     return (
         <PasswordFieldContainer>
-            <InputField inputType={inputType} inputText={inputText} />
+            <InputField inputType={inputType} inputText={inputText}
+                inputValue={inputValue} inputChangeHandler={inputChangeHandler} />
             <span className="password_container_icon"
                 onClick={eyeClickHandler}>{
                     inputType === 'password' ? <VisibilityIcon /> : <VisibilityOffIcon />

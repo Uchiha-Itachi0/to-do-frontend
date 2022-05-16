@@ -56,7 +56,7 @@ const Form = ({
     ]
     const totalPasswordFieldsSignUp = [
         { inputText: "password" },
-        { inputText: "confirm password" }
+        { inputText: "confirmPassword" }
     ]
 
     const totalInputFieldsLogin = [

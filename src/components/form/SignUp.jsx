@@ -24,13 +24,13 @@ width: max(30vw, 300px);
         position: absolute;
         height: .2vw;
         width: 100%;
-        background: #363062;
+        background: var(--background);
     }
 
     span{
         position: relative;
         z-index: 1;
-        background: #fff;
+        background: var(--background);
         font-size: max(1.5vw, 1.5rem);
 
     }
@@ -48,18 +48,18 @@ width: max(30vw, 300px);
 
     button{
         font-size: max(1.5vw, 1.5rem);
-        background: #363062;
-        color: #fff;
+        background: var(--buttonColor);
+        color: var(--fontColor);
         transition: 200ms;
-        border: 2px solid #363062;
+        border: 2px solid var(--buttonColor);
 
         &:hover{
             background: transparent;
-            color: #000;
+            color: var(--fontColor);
         }
         &:disabled{
-            background: rgba(0, 0, 0, 0.1);
-            color: rgba(0, 0, 0, 0.5);
+            background: var(--disabledBackground);
+            color: var(--disabledColor);
             cursor: not-allowed;
         }
     }
@@ -71,12 +71,12 @@ width: max(30vw, 300px);
     flex-direction: column;
     gap: max(.5vw, 1em);
     padding: 1em;
-    border-top: 2px solid #363062;
+    border-top: 2px solid var(--fontColor);
     .sign_up_container_footer_login{
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #363062;
+        color: var(--linkColor);
         cursor: pointer;
         font-weight: 600;
         font-size: max(1.5vw, 1.5rem);

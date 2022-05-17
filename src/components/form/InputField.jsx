@@ -7,13 +7,21 @@ input{
     width: -webkit-fill-available;
     padding: .3em .5em;
     font-size: max(1.2vw, 1.2rem);
-    border: 1px solid #363062;
+    background: var(--background);
+    border: none;
+    box-shadow: 0 0 2px var(--fontColor);
+    color: var(--fontColor);
+    border-radius: 6px;
 
+    &:focus {
+        outline: 2px solid var(--linkColor);
+        background: transparent;
+    }
     &:focus + span,
     &:not(:placeholder-shown) + span{
         top: -10px;
         transform: scale(.8);
-        background: #fff;
+        background: var(--background);
     }
 }
 span{

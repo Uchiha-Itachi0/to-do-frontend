@@ -8,7 +8,7 @@ position: fixed;
 bottom: -100%;
 left: 50%;
 transform: translate(-50%, 50%);
-color: #000;
+color: var(--fontColor);
 perspective: 1000px;
 transition: 300ms;
 &.form_container_active{
@@ -17,7 +17,9 @@ transition: 300ms;
 .form_container_3d{
     transform-style: preserve-3d;
     transition: 500ms;
-    background: #fff;
+    background: var(--background);
+    box-shadow: 0 0 2px var(--fontColor);
+
 
     &.rotate{
     transform: rotateY(-180deg);
@@ -30,14 +32,14 @@ transition: 300ms;
 
 .form_container_sign_up{
     position: relative;
-    background: #fff;
+    background: var(--background);
     backface-visibility: hidden;
 }
 .form_container_log_in{
     position: absolute;
     inset: 0;
     transform: rotateY(180deg);
-    background: #fff;
+    background: var(--background);
     backface-visibility: hidden;
 
 }

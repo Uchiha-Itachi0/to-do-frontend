@@ -7,7 +7,9 @@ const ButtonStyle = styled.button`
     padding: .5rem 2rem;
     cursor: pointer;
     border-radius: 32px;
-    border: 2px solid #fff;
+    border: 2px solid var(--buttonColor);
+    background: var(--buttonColor);
+    color: var(--fontColor);
 `;
 const Button = ({
     children,

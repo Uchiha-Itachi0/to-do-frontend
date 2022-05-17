@@ -32,9 +32,17 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+:root{
+	--background: ${({VARIABLES, theme}) => `${VARIABLES[theme].background}`};
+	--fontColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].fontColor}`};
+	--linkColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].linkColor}`};
+	--buttonColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].buttonColor}`};
+	--disabledColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].disabledColor}`};
+	--disabledBackground: ${({VARIABLES, theme}) => `${VARIABLES[theme].disabledBackground}`};
+}
 body {
 	line-height: 1;
-	background-color: #363062;
+	background: var(--background);
 }
 ol, ul {
 	list-style: none;

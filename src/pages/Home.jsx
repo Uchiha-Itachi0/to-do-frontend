@@ -5,18 +5,23 @@ import Time from '../components/Time';
 import Button from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { SHOW_MODAL } from '../redux/Slice/modalSlice';
+import { CHANGE_THEME } from '../redux/Slice/themeSlice';
 import Modal from '../components/modal';
 import Form from '../components/form/Form';
+import VARIABLES from '../utils/Variables';
+
 const HomeContainer = styled.section`
-background-color: #363062;
+background-color: var(--background);
 min-height: max-content;
-color: #FFFF;
+color: var(--fontColor);
 padding: 0 1rem;
 
 nav {
     position: relative;
     z-index: 1;
     padding: 2em;
+    display: flex;
+    justify-content: space-between;
     .logo{
         font-size: max(2vw, 2rem);
     }
@@ -58,15 +63,16 @@ nav {
 .home_container_sign_up_button{
     button{
         background: transparent;
-        color: white;
+        color: var(--fontColor);
         transition: 200ms linear;
 
         &:hover{
-            background: white;
-            color: black;
+            background: var(--buttonColor);
+            color: var(--fontColor);
         }
     }
 }
+
 
 @media only screen and (max-width: 720px){
     nav{
@@ -107,8 +113,15 @@ nav {
 const Home = () => {
 
     const showModal = useSelector(state => state.modal.showModal);
+    const theme = useSelector(state => state.theme.theme);
+
     const dispatch = useDispatch();
     const [showLogin, setLogin] = useState(false);
+
+    const toggleThemeHandler = () => {
+        dispatch(CHANGE_THEME());
+    }
+
     const clickHandler = (whichForm) => {
         dispatch(SHOW_MODAL());
         if(whichForm === "login"){
@@ -123,11 +136,12 @@ const Home = () => {
     }
 
     return (
-        <HomeContainer>
+        <HomeContainer VARIABLES={VARIABLES} theme={theme}>
             {showModal ? <Modal modalClickHandler={modalClickHandler} /> : null}
             <Form showLogin = {showLogin} setLogin = {setLogin}/>
             <nav>
                 <h1 className="logo">JAR</h1>
+                <Button className="home_container_nav_button" clickHandler={() => toggleThemeHandler()}>Change Theme</Button>
             </nav>
             <div className="home_container_time_block">
                 <Time />

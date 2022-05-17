@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import RemainingHours from '../components/RemainingHours';
 import Time from '../components/Time';
 import Button from "../components/Button";
+import Nav from "../components/Nav";
 import { useSelector, useDispatch } from "react-redux";
 import { SHOW_MODAL } from '../redux/Slice/modalSlice';
-import { CHANGE_THEME } from '../redux/Slice/themeSlice';
 import Modal from '../components/modal';
 import Form from '../components/form/Form';
 import VARIABLES from '../utils/Variables';
@@ -16,16 +16,6 @@ min-height: max-content;
 color: var(--fontColor);
 padding: 0 1rem;
 
-nav {
-    position: relative;
-    z-index: 1;
-    padding: 2em;
-    display: flex;
-    justify-content: space-between;
-    .logo{
-        font-size: max(2vw, 2rem);
-    }
-}
 .home_container_time_block{
     text-align: center;
     padding: 1em;
@@ -75,12 +65,6 @@ nav {
 
 
 @media only screen and (max-width: 720px){
-    nav{
-        padding: 1em .4em;
-        .logo{
-            font-size: 8vw;
-        }
-    }
     .home_container_time_block{
         font-size: 8vw;
         margin: 4rem 0;
@@ -118,16 +102,13 @@ const Home = () => {
     const dispatch = useDispatch();
     const [showLogin, setLogin] = useState(false);
 
-    const toggleThemeHandler = () => {
-        dispatch(CHANGE_THEME());
-    }
 
     const clickHandler = (whichForm) => {
         dispatch(SHOW_MODAL());
-        if(whichForm === "login"){
+        if (whichForm === "login") {
             setLogin(true);
         }
-        else{
+        else {
             setLogin(false);
         }
     }
@@ -138,11 +119,8 @@ const Home = () => {
     return (
         <HomeContainer VARIABLES={VARIABLES} theme={theme}>
             {showModal ? <Modal modalClickHandler={modalClickHandler} /> : null}
-            <Form showLogin = {showLogin} setLogin = {setLogin}/>
-            <nav>
-                <h1 className="logo">JAR</h1>
-                <Button className="home_container_nav_button" clickHandler={() => toggleThemeHandler()}>Change Theme</Button>
-            </nav>
+            <Form showLogin={showLogin} setLogin={setLogin} />
+            <Nav />
             <div className="home_container_time_block">
                 <Time />
                 <div className="home_container_time_block_remaining_hour">
@@ -158,7 +136,7 @@ const Home = () => {
                     <Button buttonDisable={false} clickHandler={() => clickHandler("signUp")}>Sign up</Button>
                 </div>
                 <div className="home_container_log_in_button">
-                    <Button buttonDisable={false}  clickHandler={() => clickHandler("login")} >Log in</Button>
+                    <Button buttonDisable={false} clickHandler={() => clickHandler("login")} >Log in</Button>
                 </div>
             </div>
         </HomeContainer>

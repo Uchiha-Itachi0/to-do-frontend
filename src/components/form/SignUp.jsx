@@ -24,7 +24,7 @@ width: max(30vw, 300px);
         position: absolute;
         height: .2vw;
         width: 100%;
-        background: var(--background);
+        background: var(--fontColor);
     }
 
     span{

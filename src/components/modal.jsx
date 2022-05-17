@@ -5,6 +5,7 @@ const ModalStyle = styled.div`
 position: fixed;
 inset: 0;
 background: rgba(0, 0, 0, .4);
+z-index: 1000;
 `;
 const  Modal = ({
     modalClickHandler

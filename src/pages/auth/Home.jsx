@@ -6,6 +6,9 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { SHOW_MODAL } from '../../redux/Slice/modalSlice';
 import Modal from '../../components/modal';
@@ -41,7 +44,7 @@ display: flex;
 
     /* Handle on hover */
     &::-webkit-scrollbar-thumb:hover {
-      background: #b30000; 
+      background: var(--linkColor); 
     }
     .home_container_side_bar_arrow {
         position: absolute;
@@ -93,6 +96,7 @@ display: flex;
     background: var(--background);
     color: var(--fontColor);
     box-shadow: 0px 0px 2px var(--fontColor);
+    padding: 0 1em;
 
     .home_container_task_screen_arrow {
         position: absolute;
@@ -142,8 +146,39 @@ display: flex;
             padding: 2em;
             width: 80%;
             cursor: pointer;
+            transition: 200ms;
             h1{
                 font-size: max(2vw, 2rem);
+            }
+
+            .home_container_task_screen_task_container_task_buttons{
+                display: flex;
+                gap: 1em;
+                align-items: center;
+                justify-content: space-between;
+                margin-top: 2em;
+                height: 0;
+                overflow: hidden;
+                transition: 200ms;
+                svg{
+                    font-size: max(2.5vw, 2.5rem);
+
+                }
+                .home_container_task_screen_task_container_task_button_1{
+                    color: var(--buttonColor);
+                }
+                .home_container_task_screen_task_container_task_button_2{
+                    color: var(--deleteButtonColor);
+                }
+                .home_container_task_screen_task_container_task_button_3{
+                    color: var(--editButtonColor);
+                }
+            }
+            &:hover{
+                .home_container_task_screen_task_container_task_buttons{
+                    transition: 200ms;
+                    height: max(2.5vw, 2.5rem);
+                }
             }
         }
     }
@@ -175,6 +210,41 @@ display: flex;
     }   
 }
 
+@media only screen and (max-width: 660px){
+    .home_container_task_screen{
+        .home_container_task_screen_time_container{
+            margin-bottom: 1em;
+            font-size: 8vw;
+            p{
+                font-size: 6vw;
+                span{
+                    font-size: 7vw;
+                }
+            }
+        }
+        .home_container_task_screen_input_container{
+            input{
+                font-size: 6vw;
+            }
+            svg{
+                font-size: 10vw;
+            }
+        }
+        .home_container_task_screen_task_container{
+            .home_container_task_screen_task_container_task{
+                h1{
+                    font-size: 6vw;
+                }
+
+                .home_container_task_screen_task_container_task_buttons{
+                    svg{
+                        font-size: 8vw;
+                    }
+                }
+            }
+        }
+    }
+}
 @media only screen and (max-width: 1090px){
     position: relative;
     .home_container_side_bar{
@@ -216,7 +286,7 @@ const Home = () => {
     const plusProjectButtonClicked = () => {
         console.log(inputValue);
     }
-    const plusTaskButtonClicked = () => {}
+    const plusTaskButtonClicked = () => { }
 
     const menuToggleHandler = () => {
         dispatch(SHOW_MODAL());
@@ -268,30 +338,86 @@ const Home = () => {
                     <div className="home_container_task_screen_task_container">
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks Some small task to see how it looks Some small task to see how it looks
-                            Some small task to see how it looks
-                            Some small task to see how it looks
-                            Some small task to see how it looks Some small task to see how it looks</h1>
+                                Some small task to see how it looks
+                                Some small task to see how it looks
+                                Some small task to see how it looks Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                         <div className="home_container_task_screen_task_container_task">
                             <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
+                        </div>
+                        <div className="home_container_task_screen_task_container_task">
+                            <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
+                        </div>
+                        <div className="home_container_task_screen_task_container_task">
+                            <h1>Some small task to see how it looks</h1>
+                            <div className="home_container_task_screen_task_container_task_buttons">
+                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                            </div>
                         </div>
                     </div>
                 </div>

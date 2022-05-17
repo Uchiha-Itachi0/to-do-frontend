@@ -5,7 +5,9 @@ module.exports = {
         linkColor: "#58A6ff",
         buttonColor: "#238636",
         disabledBackground: "rgba(255, 255, 255, 0.6)",
-        disabledColor: "rgba(255, 255, 255, 0.5)"
+        disabledColor: "rgba(255, 255, 255, 0.5)",
+        deleteButtonColor: "rgb(255, 0, 0)",
+        editButtonColor: "#FFFF00"
     },
     lightTheme: {
         background: "#fff",
@@ -13,6 +15,8 @@ module.exports = {
         linkColor: "#0851c7",
         buttonColor: "#238636",
         disabledBackground: "rgba(0, 0, 0, 0.1)",
-        disabledColor: "rgba(0, 0, 0, 0.2)"
+        disabledColor: "rgba(0, 0, 0, 0.2)",
+        deleteButtonColor: "rgb(255, 0, 0)",
+        editButtonColor: "rgb(0, 0, 255)"
     }
 }

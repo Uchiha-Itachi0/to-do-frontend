@@ -39,6 +39,8 @@ footer, header, hgroup, menu, nav, section {
 	--buttonColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].buttonColor}`};
 	--disabledColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].disabledColor}`};
 	--disabledBackground: ${({VARIABLES, theme}) => `${VARIABLES[theme].disabledBackground}`};
+	--deleteButtonColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].deleteButtonColor}`};
+	--editButtonColor: ${({VARIABLES, theme}) => `${VARIABLES[theme].editButtonColor}`};
 }
 body {
 	line-height: 1;

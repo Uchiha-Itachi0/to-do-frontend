@@ -78,15 +78,43 @@ display: flex;
             flex-direction: column;
             gap: 2em;
             margin-top: 2em;
-
-            .home_container_side_bar_project_section_title_content{
+            .home_container_side_bar_project_section_title_completed{
                 display: flex;
+                align-items: center;
                 gap: .5em;
                 font-size: max(1.5vw, 1.5em);
-                align-items: center;
-                color: var(--fontColor);
                 cursor: pointer;
+
+                &.active{
+                    color: var(--linkColor);
+                }
             }
+
+            .home_container_side_bar_project_section_title_content_container{
+                display: flex;
+                justify-content: space-between;
+                .home_container_side_bar_project_section_title_content{
+                    display: flex;
+                    gap: .5em;
+                    font-size: max(1.5vw, 1.5em);
+                    align-items: center;
+                    color: var(--fontColor);
+                    cursor: pointer;
+                    &.active{
+                        color: var(--linkColor);
+                    }
+                }
+                .home_container_side_bar_project_section_title_content_button{
+
+                    svg{
+                        font-size: max(1.5vw, 1.5rem);
+                        cursor: pointer;
+                        color: var(--deleteButtonColor);
+                    }
+                }
+            }
+
+
         }
     }
 }
@@ -97,6 +125,7 @@ display: flex;
     color: var(--fontColor);
     box-shadow: 0px 0px 2px var(--fontColor);
     padding: 0 1em;
+    padding-bottom: 3em;
 
     .home_container_task_screen_arrow {
         position: absolute;
@@ -118,6 +147,12 @@ display: flex;
                 font-size: max(2.5vw, 2.5rem);
             }
         }
+    }
+
+    .home_container_task_screen_heading{
+        text-align: center;
+        font-size: max(2.5vw, 2.5rem);
+        margin-bottom: 1em;
     }
     .home_container_task_screen_input_container{
         display: flex;
@@ -202,9 +237,12 @@ display: flex;
             }
             .home_container_side_bar_project_section_title{
                 gap: 1.5em;
-                .home_container_side_bar_project_section_title_content{
-                    font-size: 6vw;
+                .home_container_side_bar_project_section_title_content_container{
+                    .home_container_side_bar_project_section_title_content{
+                        font-size: 6vw;
+                    }
                 }
+
             }
         }
     }   
@@ -273,26 +311,45 @@ display: flex;
 
 `;
 
-const project_content = ["Work🚩", "Home", "College", "Other", "Work", "Work", 'Work', 'Work', 'Work', 'Work', 'Work'];
-
 const Home = () => {
-    const [inputValue, setInputValue] = useState("");
+    const [projectInputValue, setProjectInputValue] = useState("");
+    const [taskInputValue, setTaskInputValue] = useState("");
+    const [projectContent, setProjectContent] = useState(["Work🚩", "Home", "College", "Other", "Work", "Work", 'Work', 'Work', 'Work', 'Work', 'Work'])
+    const [taskContent, setTaskContent] = useState(["Python Practicle", "Todo frontend", "Prepare for test", "Some random task", "Some random long task I don't know what to write in the long task let see I think that's it I can't think of something else ok that's it"])
+    const [oldActiveValue, setOldActiveValue] = useState("");
     const showModal = useSelector(state => state.modal.showModal);
     const dispatch = useDispatch();
 
     const inputChangeHandler = (e) => {
-        setInputValue(e.target.value);
+        e.target.name === "project" ? setProjectInputValue(e.target.value) : setTaskInputValue(e.target.value);
     }
     const plusProjectButtonClicked = () => {
-        console.log(inputValue);
+        setProjectContent([
+            ...projectContent,
+            projectInputValue
+        ])
+        setProjectInputValue("");
     }
-    const plusTaskButtonClicked = () => { }
+    const plusTaskButtonClicked = () => {
+        setTaskContent([
+            ...taskContent,
+            taskInputValue
+        ])
+        setTaskInputValue("");
+    }
 
     const menuToggleHandler = () => {
         dispatch(SHOW_MODAL());
     }
     const modalClickHandler = () => {
         dispatch(SHOW_MODAL());
+    }
+    const projectClickHandler = (e) => {
+        if(oldActiveValue && oldActiveValue !== e.target.parentElement){
+            oldActiveValue.classList.remove("active");
+        }
+        e.target.parentElement.classList.add("active");
+        setOldActiveValue(e.target.parentElement);
     }
     return (
         <>
@@ -307,16 +364,28 @@ const Home = () => {
                     <h1 className="home_container_side_bar_username">Anubhav Shukla</h1>
                     <div className="home_container_side_bar_project_section">
                         <div className="home_container_side_bar_project_section_input_container">
-                            <InputField inputPlaceholder={"Add Project"} inputValue={inputValue} inputChangeHandler={(e) => inputChangeHandler(e)} />
+                            <InputField name={"project"} inputPlaceholder={"Add Project"} inputValue={projectInputValue} inputChangeHandler={(e) => inputChangeHandler(e)} />
                             <AddBoxIcon onClick={() => plusProjectButtonClicked()} />
                         </div>
                         <div className="home_container_side_bar_project_section_title">
-                            {project_content.map((value, index) => {
+                            <div className="home_container_side_bar_project_section_title_completed" 
+                            onClick = {(e) => {projectClickHandler(e)}}>
+                                <PlayArrowIcon />
+                                <h1>All Completed Work</h1>
+                            </div>
+                            {projectContent.map((value, index) => {
                                 return (
-                                    <div key={value + index} className="home_container_side_bar_project_section_title_content">
-                                        <PlayArrowIcon />
-                                        <p>{value}</p>
+                                    <div key={value + index} className="home_container_side_bar_project_section_title_content_container">
+                                        <div className="home_container_side_bar_project_section_title_content"
+                                        onClick={(e) => projectClickHandler(e)}>
+                                            <PlayArrowIcon />
+                                            <p>{value}</p>
+                                        </div>
+                                        <div className="home_container_side_bar_project_section_title_content_button">
+                                            <DeleteIcon />
+                                        </div>
                                     </div>
+
                                 )
                             })}
 
@@ -331,94 +400,28 @@ const Home = () => {
                         <Time />
                         <p>Total time remaining: <span>{<RemainingHours />}</span> Hrs</p>
                     </div>
+                    <div className="home_container_task_screen_heading">
+                        <h1>Work</h1>
+                    </div>
                     <div className="home_container_task_screen_input_container">
-                        <InputField inputPlaceholder={"Add Task"} />
+                        <InputField inputPlaceholder={"Add Task"} inputValue={taskInputValue} name="task"
+                            inputChangeHandler={(e) => inputChangeHandler(e)}
+                        />
                         <AddBoxIcon onClick={() => plusTaskButtonClicked()} />
                     </div>
                     <div className="home_container_task_screen_task_container">
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks Some small task to see how it looks Some small task to see how it looks
-                                Some small task to see how it looks
-                                Some small task to see how it looks
-                                Some small task to see how it looks Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
-                        <div className="home_container_task_screen_task_container_task">
-                            <h1>Some small task to see how it looks</h1>
-                            <div className="home_container_task_screen_task_container_task_buttons">
-                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
-                                <EditIcon className="home_container_task_screen_task_container_task_button_3" />
-                            </div>
-                        </div>
+                        {taskContent.map((value, index) => {
+                            return (
+                                <div key={index + value} className="home_container_task_screen_task_container_task">
+                                    <h1>{value}</h1>
+                                    <div className="home_container_task_screen_task_container_task_buttons">
+                                        <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
+                                        <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                        <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
             </HomeContainer>

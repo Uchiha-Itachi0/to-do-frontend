@@ -15,10 +15,11 @@ background: var(--background);
 const InputField = ({
   inputValue,
   inputChangeHandler,
-  inputPlaceholder
+  inputPlaceholder,
+  name
 }) => {
   return (
-    <Input type="text" placeholder={inputPlaceholder} value={inputValue} onChange={(e) => inputChangeHandler(e)}/>
+    <Input type="text" placeholder={inputPlaceholder} value={inputValue} name={name} onChange={(e) => inputChangeHandler(e)}/>
   )
 }
 

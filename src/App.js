@@ -1,5 +1,5 @@
 import React from "react";
-import Home from "./pages/auth/Home";
+import Home from "./pages/Home";
 import GlobalStyle from "./utils/GlobalStyleSheet/GlobalStyleSheet";
 import { useSelector } from 'react-redux';
 import VARIABLES from "./utils/Variables";

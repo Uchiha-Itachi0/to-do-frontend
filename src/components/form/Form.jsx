@@ -11,6 +11,7 @@ transform: translate(-50%, 50%);
 color: var(--fontColor);
 perspective: 1000px;
 transition: 300ms;
+z-index: 1002;
 &.form_container_active{
     bottom: 50%;
 }
@@ -42,6 +43,15 @@ transition: 300ms;
     background: var(--background);
     backface-visibility: hidden;
 
+}
+@media only screen and (max-height: 615px){
+    height: 800px;
+    /* position: ab; */
+    bottom: -200%;
+    &.form_container_active{
+    bottom: -20%;
+    position: absolute;
+}
 }
 `;
 

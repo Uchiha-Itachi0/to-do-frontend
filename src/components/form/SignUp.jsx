@@ -10,6 +10,7 @@ import axios from "../../utils/axios";
 // import Message from './../Message';
 import { useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../redux/Slice/modalSlice';
+import { USER_INFO } from '../../redux/Slice/user';
 
 const SignUpContainer = styled.div`
 padding: 1em;
@@ -228,18 +229,19 @@ const SignUp = ({
     }, [inputValue]);
 
     const submitClickHandler = async (e) => {
-        const graphqlQuery = `
+        try {
+
+            if (e.target.innerText === "Sign Up") {
+                const graphqlQuery = `
             mutation{
                 SignUp(userData:{
                     name: "${inputValue.signUp.name}",
                     email: "${inputValue.signUp.email}",
                     password: "${inputValue.signUp.password}",
                     confirmPassword: "${inputValue.signUp.confirmPassword}"
-                }){_id, name, email, catogaries, message}
+                }){_id, name}
             }
             `
-        if (e.target.innerText === "Sign Up") {
-            try {
                 const response = await axios.post("/graphql", { query: graphqlQuery })
                 const baseObj = response.data.data.SignUp;
                 const name = baseObj.name;
@@ -260,30 +262,63 @@ const SignUp = ({
                         confirmPassword: ""
                     }
                 })
+
             }
-            catch (error) {
-                const message = error.response.data.errors[0].message;
-                const statusCode = error.response.data.errors[0].status;
+
+            else if (e.target.innerText === "Login") {
+                const graphqlQuery = `
+                mutation{
+                    LogIn(userLoginData:{
+                        email:"${inputValue.logIn.email}",
+                        password: "${inputValue.logIn.password}"
+                    }){_id, token, name, email}
+                }
+                `
+                const response = await axios.post("/graphql", { query: graphqlQuery })
+                const baseObj = response.data.data.LogIn;
+                localStorage.setItem("token", baseObj.token);
+                const userInfo = {
+                    name: baseObj.name,
+                    email: baseObj.email,
+                    token: baseObj.token,
+                    id: baseObj._id
+                }
+                dispatch(USER_INFO(userInfo));
+                setInputValue({
+                    ...inputValue,
+                    logIn: {
+                        ...inputValue.logIn,
+                        email: "",
+                        password: ""
+                    }
+                })
                 setMessage({
                     ...messageBox,
                     showMessage: true,
-                    messageText: message,
-                    messageStatusCode: statusCode,
-                    messageType: "error"
+                    messageText: `Welcome back ${baseObj.name}`,
+                    messageStatusCode: 200,
+                    messageType: "pass"
                 })
             }
-
+        }
+        catch (error) {
+            const message = error.response.data.errors[0].message;
+            const statusCode = error.response.data.errors[0].status;
+            setMessage({
+                ...messageBox,
+                showMessage: true,
+                messageText: message,
+                messageStatusCode: statusCode,
+                messageType: "error"
+            })
         }
 
-        else if (e.target.innerText === "Login") {
-            console.log("Welcome back");
-        }
     }
     return (
         <SignUpContainer>
             <div className="sign_up_container_nav">
                 <h1 className="sign_up_container_logo">JAR</h1>
-                <CancelIcon onClick={() => closeFormHandler()}/>
+                <CancelIcon onClick={() => closeFormHandler()} />
             </div>
 
             {messageBox.showMessage ?

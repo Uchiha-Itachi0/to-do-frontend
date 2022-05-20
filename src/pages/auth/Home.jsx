@@ -14,7 +14,9 @@ import { SHOW_MODAL } from '../../redux/Slice/modalSlice';
 import Modal from '../../components/modal';
 import Time from './../../components/Time';
 import RemainingHours from './../../components/RemainingHours';
-
+import Button from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
+import { USER_INFO } from '../../redux/Slice/user';
 const HomeContainer = styled.section`
 display: flex;
 .home_container_side_bar{
@@ -58,6 +60,14 @@ display: flex;
         font-size: max(1.8vw, 1.8rem);
         text-align: center;
         margin-top: 2em;
+    }
+
+    .home_container_side_bar_logout_button{
+        text-align: center;
+        margin-top: 1em;
+        button{
+            font-size: max(1.5vw, 1.5rem);
+        }
     }
 
     .home_container_side_bar_project_section{
@@ -318,7 +328,9 @@ const Home = () => {
     const [taskContent, setTaskContent] = useState(["Python Practicle", "Todo frontend", "Prepare for test", "Some random task", "Some random long task I don't know what to write in the long task let see I think that's it I can't think of something else ok that's it"])
     const [oldActiveValue, setOldActiveValue] = useState("");
     const showModal = useSelector(state => state.modal.showModal);
+    const user = useSelector(state => state.user);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const inputChangeHandler = (e) => {
         e.target.name === "project" ? setProjectInputValue(e.target.value) : setTaskInputValue(e.target.value);
@@ -345,12 +357,22 @@ const Home = () => {
         dispatch(SHOW_MODAL());
     }
     const projectClickHandler = (e) => {
-        if(oldActiveValue && oldActiveValue !== e.target.parentElement){
+        if (oldActiveValue && oldActiveValue !== e.target.parentElement) {
             oldActiveValue.classList.remove("active");
         }
         e.target.parentElement.classList.add("active");
         setOldActiveValue(e.target.parentElement);
     }
+    const logoutClickHandler = () => {
+        localStorage.removeItem("token");
+        dispatch(USER_INFO({
+            name: "",
+            email: "",
+            id: "",
+            token: ""
+        }))
+        navigate("/")
+    };
     return (
         <>
             <Nav />
@@ -361,15 +383,18 @@ const Home = () => {
                     <div className="home_container_side_bar_arrow">
                         <ArrowCircleLeftIcon onClick={() => menuToggleHandler()} />
                     </div>
-                    <h1 className="home_container_side_bar_username">Anubhav Shukla</h1>
+                    <h1 className="home_container_side_bar_username">{user.name}</h1>
+                    <div className="home_container_side_bar_logout_button">
+                        <Button buttonDisable={false} clickHandler={() => logoutClickHandler()}>Log out</Button>
+                    </div>
                     <div className="home_container_side_bar_project_section">
                         <div className="home_container_side_bar_project_section_input_container">
                             <InputField name={"project"} inputPlaceholder={"Add Project"} inputValue={projectInputValue} inputChangeHandler={(e) => inputChangeHandler(e)} />
                             <AddBoxIcon onClick={() => plusProjectButtonClicked()} />
                         </div>
                         <div className="home_container_side_bar_project_section_title">
-                            <div className="home_container_side_bar_project_section_title_completed" 
-                            onClick = {(e) => {projectClickHandler(e)}}>
+                            <div className="home_container_side_bar_project_section_title_completed"
+                                onClick={(e) => { projectClickHandler(e) }}>
                                 <PlayArrowIcon />
                                 <h1>All Completed Work</h1>
                             </div>
@@ -377,7 +402,7 @@ const Home = () => {
                                 return (
                                     <div key={value + index} className="home_container_side_bar_project_section_title_content_container">
                                         <div className="home_container_side_bar_project_section_title_content"
-                                        onClick={(e) => projectClickHandler(e)}>
+                                            onClick={(e) => projectClickHandler(e)}>
                                             <PlayArrowIcon />
                                             <p>{value}</p>
                                         </div>

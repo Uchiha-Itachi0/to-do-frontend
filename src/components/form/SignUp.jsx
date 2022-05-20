@@ -11,6 +11,7 @@ import axios from "../../utils/axios";
 import { useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../redux/Slice/modalSlice';
 import { USER_INFO } from '../../redux/Slice/user';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpContainer = styled.div`
 padding: 1em;
@@ -191,6 +192,7 @@ const SignUp = ({
     });
     const dispatch = useDispatch();
     const closeFormHandler = () => dispatch(SHOW_MODAL());
+    const navigate = useNavigate();
     const inputChangeHandler = (e) => {
         const value = e.target.value;
         const formName = e.target.name.split(" ")[1];
@@ -299,6 +301,8 @@ const SignUp = ({
                     messageStatusCode: 200,
                     messageType: "pass"
                 })
+                dispatch(SHOW_MODAL())
+                navigate(`${baseObj._id}/dashboard`);
             }
         }
         catch (error) {

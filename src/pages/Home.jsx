@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import RemainingHours from '../components/RemainingHours';
 import Time from '../components/Time';
@@ -9,6 +9,9 @@ import { SHOW_MODAL } from '../redux/Slice/modalSlice';
 import Modal from '../components/modal';
 import Form from '../components/form/Form';
 import VARIABLES from '../utils/Variables';
+import { useNavigate } from 'react-router-dom';
+import axios from '../utils/axios';
+import { USER_INFO } from '../redux/Slice/user';
 
 const HomeContainer = styled.section`
 background-color: var(--background);
@@ -96,10 +99,44 @@ padding: 0 1rem;
 `;
 const Home = () => {
 
+    const user = useSelector(state => state.user);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const fetchUser = async () => {
+          const graphQlQuery = `
+          query{
+            me{_id, name, email}
+          }
+          `
+          try {
+            const response = await axios.post("/graphql", { query: graphQlQuery }, {
+              headers: {
+                Authorization: localStorage.getItem("token")
+              }
+            })
+            const baseObj = response.data.data.me;
+            const userInfo = {
+              name: baseObj.name,
+              email: baseObj.email,
+              id: baseObj._id,
+              token: localStorage.getItem("token")
+            }
+            dispatch(USER_INFO(userInfo));
+            navigate(`${user.id}/dashboard`);
+          }
+          catch (error) {
+            console.log(error);
+          }
+        }
+        if(localStorage.getItem("token")){
+            fetchUser()
+        }
+      }, [dispatch, navigate, user])
+
     const showModal = useSelector(state => state.modal.showModal);
     const theme = useSelector(state => state.theme.theme);
 
-    const dispatch = useDispatch();
     const [showLogin, setLogin] = useState(false);
 
 

@@ -4,7 +4,9 @@ const initialUserState = {
     name: "",
     email: "",
     token: "",
-    id: ""
+    id: "",
+    catogaries: "",
+    task: ["GOOD LUCK"]
 }
 
 const userSlice = createSlice({
@@ -16,6 +18,8 @@ const userSlice = createSlice({
             state.email = actions.payload.email;
             state.token = actions.payload.token;
             state.id = actions.payload.id;
+            state.catogaries = actions.payload.catogaries;
+            state.task = actions.payload.task;
         }
     }
 });

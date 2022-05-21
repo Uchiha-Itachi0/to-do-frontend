@@ -106,7 +106,7 @@ const Home = () => {
         const fetchUser = async () => {
           const graphQlQuery = `
           query{
-            me{_id, name, email}
+            me{_id, name, email, catogaries}
           }
           `
           try {
@@ -117,10 +117,12 @@ const Home = () => {
             })
             const baseObj = response.data.data.me;
             const userInfo = {
+                ...user,
               name: baseObj.name,
               email: baseObj.email,
               id: baseObj._id,
-              token: localStorage.getItem("token")
+              token: localStorage.getItem("token"),
+              catogaries: baseObj.catogaries
             }
             dispatch(USER_INFO(userInfo));
             navigate(`${user.id}/dashboard`);

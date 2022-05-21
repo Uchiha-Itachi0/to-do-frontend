@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Nav from '../../components/Nav';
 import InputField from './../../components/InputField';
@@ -17,6 +17,9 @@ import RemainingHours from './../../components/RemainingHours';
 import Button from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { USER_INFO } from '../../redux/Slice/user';
+import axios from '../../utils/axios';
+import Message from './../../components/Message';
+
 const HomeContainer = styled.section`
 display: flex;
 .home_container_side_bar{
@@ -324,30 +327,114 @@ display: flex;
 const Home = () => {
     const [projectInputValue, setProjectInputValue] = useState("");
     const [taskInputValue, setTaskInputValue] = useState("");
-    const [projectContent, setProjectContent] = useState(["Work🚩", "Home", "College", "Other", "Work", "Work", 'Work', 'Work', 'Work', 'Work', 'Work'])
-    const [taskContent, setTaskContent] = useState(["Python Practicle", "Todo frontend", "Prepare for test", "Some random task", "Some random long task I don't know what to write in the long task let see I think that's it I can't think of something else ok that's it"])
+    const [taskContent, setTaskContent] = useState(["Good Luck"])
     const [oldActiveValue, setOldActiveValue] = useState("");
+    const [heading, setHeading] = useState("WORK");
+    const [showMessage, setShowMessage] = useState({
+        messageState: false,
+        messageText: ""
+    })
     const showModal = useSelector(state => state.modal.showModal);
     const user = useSelector(state => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const Header = {
+        headers: {
+            Authorization: localStorage.getItem("token")
+        }
+    }
+
+    useEffect(() => {
+        const fetchAllTask = async () => {
+            const graphQlQuery = `
+            mutation{
+                getTask(getTaskInfo:{
+                    userId: "${user.id}",
+                    catogary: "${heading}"
+                }){task}
+            }
+            `;
+            try {
+                const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
+                const baseObj = response.data.data.getTask;
+                if (baseObj.task.length > 0) {
+                    setTaskContent(baseObj.task)
+                }
+                else {
+                    setTaskContent(["Good Luck"])
+                }
+            }
+            catch (error) {
+                setShowMessage({
+                    ...showMessage,
+                    messageState: true,
+                    messageText: error.response.data.errors[0].message
+                })
+            }
+
+        }
+        fetchAllTask();
+    }, [heading, taskContent])
 
     const inputChangeHandler = (e) => {
         e.target.name === "project" ? setProjectInputValue(e.target.value) : setTaskInputValue(e.target.value);
     }
-    const plusProjectButtonClicked = () => {
-        setProjectContent([
-            ...projectContent,
-            projectInputValue
-        ])
-        setProjectInputValue("");
+    const plusProjectButtonClicked = async () => {
+        const upperCaseInputValue = projectInputValue.toUpperCase();
+        const graphQlQuery = `
+        mutation{
+            addCatogary(addCatogaryInfo:{
+                userId: "${user.id}",
+                catogary: "${upperCaseInputValue}"
+            }){_id, catogaries}
+        }
+        `
+        try {
+            const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
+            console.log(response.data.data);
+            dispatch(USER_INFO({
+                ...user,
+                catogaries: [...user.catogaries, upperCaseInputValue]
+            }))
+            setProjectInputValue("");
+        }
+        catch (error) {
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
     }
-    const plusTaskButtonClicked = () => {
-        setTaskContent([
-            ...taskContent,
-            taskInputValue
-        ])
-        setTaskInputValue("");
+    const plusTaskButtonClicked = async () => {
+        const graphQlQuery = `
+        mutation{
+            createTask(taskInfo:{
+                task: "${taskInputValue}",
+                catagory: "${heading}"
+            }){_id, userId}
+        }
+        `
+        try {
+            const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
+            const baseObj = response.data.data.getTask;
+            setTaskInputValue("");
+            if (taskContent[0] !== "Good Luck") {
+                setTaskContent([...taskContent, baseObj.task])
+            }
+            else {
+                setTaskContent(baseObj.task);
+            }
+
+
+        }
+        catch (error) {
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
     }
 
     const menuToggleHandler = () => {
@@ -361,7 +448,39 @@ const Home = () => {
             oldActiveValue.classList.remove("active");
         }
         e.target.parentElement.classList.add("active");
+        setHeading(e.target.innerText);
         setOldActiveValue(e.target.parentElement);
+    }
+    const projectDeleteHandler = async (value) => {
+        const graphQlQuery = `
+        mutation{
+            deleteCatogary(deleteCatogaryInfo:{
+                projectId: "${user.id}",
+                projectName: "${value}"
+            }){catogaries, message}
+        }
+        `;
+        try {
+            const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
+            const baseObj = response.data.data.deleteCatogary;
+            const userInfo = {
+                ...user,
+                catogaries: baseObj.catogaries
+            }
+            dispatch(USER_INFO(userInfo));
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: baseObj.message
+            })
+        }
+        catch (error) {
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
     }
     const logoutClickHandler = () => {
         localStorage.removeItem("token");
@@ -369,13 +488,15 @@ const Home = () => {
             name: "",
             email: "",
             id: "",
-            token: ""
+            token: "",
+            catogaries: ""
         }))
         navigate("/")
     };
     return (
         <>
             <Nav />
+            {showMessage.messageState ? <Message messageText={showMessage.messageText} showMessage={showMessage} setShowMessage={setShowMessage} /> : null}
             <HomeContainer>
                 {showModal ? <Modal modalClickHandler={modalClickHandler} /> : null}
 
@@ -398,7 +519,7 @@ const Home = () => {
                                 <PlayArrowIcon />
                                 <h1>All Completed Work</h1>
                             </div>
-                            {projectContent.map((value, index) => {
+                            {user.catogaries.map((value, index) => {
                                 return (
                                     <div key={value + index} className="home_container_side_bar_project_section_title_content_container">
                                         <div className="home_container_side_bar_project_section_title_content"
@@ -406,7 +527,8 @@ const Home = () => {
                                             <PlayArrowIcon />
                                             <p>{value}</p>
                                         </div>
-                                        <div className="home_container_side_bar_project_section_title_content_button">
+                                        <div className="home_container_side_bar_project_section_title_content_button"
+                                            onClick={() => projectDeleteHandler(value)}>
                                             <DeleteIcon />
                                         </div>
                                     </div>
@@ -426,7 +548,7 @@ const Home = () => {
                         <p>Total time remaining: <span>{<RemainingHours />}</span> Hrs</p>
                     </div>
                     <div className="home_container_task_screen_heading">
-                        <h1>Work</h1>
+                        <h1>{heading}</h1>
                     </div>
                     <div className="home_container_task_screen_input_container">
                         <InputField inputPlaceholder={"Add Task"} inputValue={taskInputValue} name="task"

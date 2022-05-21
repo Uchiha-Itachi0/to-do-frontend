@@ -273,7 +273,7 @@ const SignUp = ({
                     LogIn(userLoginData:{
                         email:"${inputValue.logIn.email}",
                         password: "${inputValue.logIn.password}"
-                    }){_id, token, name, email}
+                    }){_id, token, name, email, catogaries}
                 }
                 `
                 const response = await axios.post("/graphql", { query: graphqlQuery })
@@ -283,7 +283,8 @@ const SignUp = ({
                     name: baseObj.name,
                     email: baseObj.email,
                     token: baseObj.token,
-                    id: baseObj._id
+                    id: baseObj._id,
+                    catogaries: baseObj.catogaries
                 }
                 dispatch(USER_INFO(userInfo));
                 setInputValue({

@@ -330,6 +330,10 @@ const Home = () => {
     const [taskContent, setTaskContent] = useState(["Good Luck"])
     const [oldActiveValue, setOldActiveValue] = useState("");
     const [heading, setHeading] = useState("WORK");
+    const [updateTask, setUpdateTask] = useState({
+        toUpdate: false,
+        taskId: ""
+    });
     const [showMessage, setShowMessage] = useState({
         messageState: false,
         messageText: ""
@@ -361,7 +365,7 @@ const Home = () => {
                     setTaskContent(baseObj)
                 }
                 else {
-                    setTaskContent([{id: "initialId008", task: "Good Luck"}])
+                    setTaskContent([{ id: "initialId008", task: "Good Luck" }])
                 }
             }
             catch (error) {
@@ -411,12 +415,12 @@ const Home = () => {
             createTask(taskInfo:{
                 task: "${taskInputValue}",
                 catagory: "${heading}"
-            }){_id, userId}
+            }){_id, userId, task}
         }
         `
         try {
             const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
-            const baseObj = response.data.data.getTask;
+            const baseObj = response.data.data.createTask;
             setTaskInputValue("");
             if (taskContent[0] !== "Good Luck") {
                 setTaskContent([...taskContent, baseObj.task])
@@ -425,7 +429,38 @@ const Home = () => {
                 setTaskContent(baseObj.task);
             }
 
+        }
+        catch (error) {
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
+    }
 
+    const updateTaskHandler = async () => {
+        const graphQlQuery = `
+        mutation{
+            editTask(editTaskInfo:{
+                taskId: "${updateTask.taskId}",
+                taskValue: "${taskInputValue}"
+            }){task}
+        }
+        `;
+        try {
+            await axios.post("/graphql", { query: graphQlQuery }, Header)
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: "Updated Successfully"
+            })
+            setUpdateTask({
+                ...updateTask,
+                toUpdate: false,
+                taskId: ""
+            })
+            setTaskInputValue("");
         }
         catch (error) {
             setShowMessage({
@@ -491,7 +526,7 @@ const Home = () => {
             })
         }
         `;
-        try{
+        try {
             const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
             setShowMessage({
                 ...showMessage,
@@ -499,13 +534,45 @@ const Home = () => {
                 messageText: response.data.data.deleteTask
             })
         }
-        catch(error){
+        catch (error) {
             setShowMessage({
                 ...showMessage,
                 messageState: true,
                 messageText: error.response.data.errors[0].message
             })
         }
+    }
+    const handleTaskEdit = async (taskId, task) => {
+        setTaskInputValue(task);
+        setUpdateTask({
+            ...updateTask,
+            taskId,
+            toUpdate: true
+        });
+        //     const graphQlQuery = `
+        //     mutation{
+        //         editTask(editTaskInfo:{
+        //             taskId: "${taskId}",
+        //             taskValue: "${task}"
+        //         }){task}
+        //     }
+        //     `;
+        //     try{
+        //         const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
+        //         console.log(response.data.data.editTask);
+        //         setShowMessage({
+        //             ...showMessage,
+        //             messageState: true,
+        //             messageText: "Updated Successfully"
+        //         })
+        //     }
+        //     catch(error){
+        //         setShowMessage({
+        //             ...showMessage,
+        //             messageState: true,
+        //             messageText: error.response.data.errors[0].message
+        //         })
+        //     }
     }
     const logoutClickHandler = () => {
         localStorage.removeItem("token");
@@ -579,7 +646,7 @@ const Home = () => {
                         <InputField inputPlaceholder={"Add Task"} inputValue={taskInputValue} name="task"
                             inputChangeHandler={(e) => inputChangeHandler(e)}
                         />
-                        <AddBoxIcon onClick={() => plusTaskButtonClicked()} />
+                        <AddBoxIcon onClick={() => updateTask.toUpdate ? updateTaskHandler() : plusTaskButtonClicked()} />
                     </div>
                     <div className="home_container_task_screen_task_container">
                         {taskContent.map((value, index) => {
@@ -588,10 +655,12 @@ const Home = () => {
                                     <h1>{value.task}</h1>
                                     <div className="home_container_task_screen_task_container_task_buttons">
                                         <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                        <DeleteIcon className="home_container_task_screen_task_container_task_button_2" 
+                                        <DeleteIcon className="home_container_task_screen_task_container_task_button_2"
                                             onClick={() => handleTaskDelete(value.id)}
                                         />
-                                        <EditIcon className="home_container_task_screen_task_container_task_button_3" />
+                                        <EditIcon className="home_container_task_screen_task_container_task_button_3"
+                                            onClick={() => handleTaskEdit(value.id, value.task)}
+                                        />
                                     </div>
                                 </div>
                             )

@@ -9,6 +9,7 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useDispatch, useSelector } from 'react-redux';
 import { SHOW_MODAL } from '../../redux/Slice/modalSlice';
 import Modal from '../../components/modal';
@@ -330,6 +331,7 @@ const Home = () => {
     const [taskContent, setTaskContent] = useState(["Good Luck"])
     const [oldActiveValue, setOldActiveValue] = useState("");
     const [heading, setHeading] = useState("WORK");
+    const [showCompletedTask, setShowCompletedTask] = useState(false);
     const [updateTask, setUpdateTask] = useState({
         toUpdate: false,
         taskId: ""
@@ -354,7 +356,8 @@ const Home = () => {
             mutation{
                 getTask(getTaskInfo:{
                     userId: "${user.id}",
-                    catogary: "${heading}"
+                    catogary: "${heading}",
+                    showCompletedTask: ${showCompletedTask}
                 }){task, id}
             }
             `;
@@ -369,6 +372,7 @@ const Home = () => {
                 }
             }
             catch (error) {
+                console.log(error);
                 setShowMessage({
                     ...showMessage,
                     messageState: true,
@@ -378,6 +382,7 @@ const Home = () => {
 
         }
         fetchAllTask();
+
     }, [heading, taskContent])
 
     const inputChangeHandler = (e) => {
@@ -484,6 +489,7 @@ const Home = () => {
         e.target.parentElement.classList.add("active");
         setHeading(e.target.innerText);
         setOldActiveValue(e.target.parentElement);
+        setShowCompletedTask(false);
     }
     const projectDeleteHandler = async (value) => {
         const graphQlQuery = `
@@ -549,30 +555,35 @@ const Home = () => {
             taskId,
             toUpdate: true
         });
-        //     const graphQlQuery = `
-        //     mutation{
-        //         editTask(editTaskInfo:{
-        //             taskId: "${taskId}",
-        //             taskValue: "${task}"
-        //         }){task}
-        //     }
-        //     `;
-        //     try{
-        //         const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
-        //         console.log(response.data.data.editTask);
-        //         setShowMessage({
-        //             ...showMessage,
-        //             messageState: true,
-        //             messageText: "Updated Successfully"
-        //         })
-        //     }
-        //     catch(error){
-        //         setShowMessage({
-        //             ...showMessage,
-        //             messageState: true,
-        //             messageText: error.response.data.errors[0].message
-        //         })
-        //     }
+    }
+
+    const fetchCompletedTask = async () => {
+        setShowCompletedTask(true);
+    }
+    const handleTaskDone = async (taskId, state) => {
+        const graphQlQuery = `
+        mutation{
+            completeTask(completeTaskInfo:{
+                taskId: "${taskId}",
+                state: ${state}
+            })
+        }
+        `;
+        try {
+            const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: response.data.data.completeTask
+            })
+        }
+        catch (error) {
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
     }
     const logoutClickHandler = () => {
         localStorage.removeItem("token");
@@ -607,7 +618,7 @@ const Home = () => {
                         </div>
                         <div className="home_container_side_bar_project_section_title">
                             <div className="home_container_side_bar_project_section_title_completed"
-                                onClick={(e) => { projectClickHandler(e) }}>
+                                onClick={(e) => { projectClickHandler(e); fetchCompletedTask(); }}>
                                 <PlayArrowIcon />
                                 <h1>All Completed Work</h1>
                             </div>
@@ -654,13 +665,27 @@ const Home = () => {
                                 <div key={value.id + index} className="home_container_task_screen_task_container_task">
                                     <h1>{value.task}</h1>
                                     <div className="home_container_task_screen_task_container_task_buttons">
-                                        <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                        <DeleteIcon className="home_container_task_screen_task_container_task_button_2"
-                                            onClick={() => handleTaskDelete(value.id)}
-                                        />
-                                        <EditIcon className="home_container_task_screen_task_container_task_button_3"
-                                            onClick={() => handleTaskEdit(value.id, value.task)}
-                                        />
+                                        {showCompletedTask
+                                            ?
+                                            <>
+                                                <RestartAltIcon className="home_container_task_screen_task_container_task_button_1" 
+                                                   onClick={() => handleTaskDone(value.id, false)}
+                                                />
+                                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2"
+                                                    onClick={() => handleTaskDelete(value.id)}
+                                                /></>
+                                            : <>
+                                                <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1"
+                                                    onClick={() => handleTaskDone(value.id, true)}
+                                                />
+                                                <DeleteIcon className="home_container_task_screen_task_container_task_button_2"
+                                                    onClick={() => handleTaskDelete(value.id)}
+                                                />
+                                                <EditIcon className="home_container_task_screen_task_container_task_button_3"
+                                                    onClick={() => handleTaskEdit(value.id, value.task)}
+                                                />
+                                            </>}
+
                                     </div>
                                 </div>
                             )

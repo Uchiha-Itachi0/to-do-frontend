@@ -351,17 +351,17 @@ const Home = () => {
                 getTask(getTaskInfo:{
                     userId: "${user.id}",
                     catogary: "${heading}"
-                }){task}
+                }){task, id}
             }
             `;
             try {
                 const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
                 const baseObj = response.data.data.getTask;
-                if (baseObj.task.length > 0) {
-                    setTaskContent(baseObj.task)
+                if (baseObj.length > 0) {
+                    setTaskContent(baseObj)
                 }
                 else {
-                    setTaskContent(["Good Luck"])
+                    setTaskContent([{id: "initialId008", task: "Good Luck"}])
                 }
             }
             catch (error) {
@@ -390,8 +390,7 @@ const Home = () => {
         }
         `
         try {
-            const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
-            console.log(response.data.data);
+            await axios.post("/graphql", { query: graphQlQuery }, Header)
             dispatch(USER_INFO({
                 ...user,
                 catogaries: [...user.catogaries, upperCaseInputValue]
@@ -468,13 +467,39 @@ const Home = () => {
                 catogaries: baseObj.catogaries
             }
             dispatch(USER_INFO(userInfo));
+            setHeading(user.catogaries[0]);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
                 messageText: baseObj.message
             })
+
         }
         catch (error) {
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
+    }
+    const handleTaskDelete = async (taskId) => {
+        const graphQlQuery = `
+        mutation{
+            deleteTask(deleteTaskInfo:{
+                taskId: "${taskId}"
+            })
+        }
+        `;
+        try{
+            const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: response.data.data.deleteTask
+            })
+        }
+        catch(error){
             setShowMessage({
                 ...showMessage,
                 messageState: true,
@@ -559,11 +584,13 @@ const Home = () => {
                     <div className="home_container_task_screen_task_container">
                         {taskContent.map((value, index) => {
                             return (
-                                <div key={index + value} className="home_container_task_screen_task_container_task">
-                                    <h1>{value}</h1>
+                                <div key={value.id + index} className="home_container_task_screen_task_container_task">
+                                    <h1>{value.task}</h1>
                                     <div className="home_container_task_screen_task_container_task_buttons">
                                         <CheckBoxIcon className="home_container_task_screen_task_container_task_button_1" />
-                                        <DeleteIcon className="home_container_task_screen_task_container_task_button_2" />
+                                        <DeleteIcon className="home_container_task_screen_task_container_task_button_2" 
+                                            onClick={() => handleTaskDelete(value.id)}
+                                        />
                                         <EditIcon className="home_container_task_screen_task_container_task_button_3" />
                                     </div>
                                 </div>

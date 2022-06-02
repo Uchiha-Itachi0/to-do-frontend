@@ -43,6 +43,7 @@ padding: 0 1rem;
         h1{
             font-size: max(3vw, 3rem);
             font-style: italic;
+            line-height: 1.3em;
             span{
                 display: block;
                 margin-top: 1rem;

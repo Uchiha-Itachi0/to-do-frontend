@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import { USER_INFO } from '../../redux/Slice/user';
 import axios from '../../utils/axios';
 import Message from './../../components/Message';
+import Spinner from '../../components/Spinner';
 
 const HomeContainer = styled.section`
 display: flex;
@@ -332,6 +333,7 @@ const Home = () => {
     const [oldActiveValue, setOldActiveValue] = useState("");
     const [heading, setHeading] = useState("WORK");
     const [showCompletedTask, setShowCompletedTask] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(false);
     const [updateTask, setUpdateTask] = useState({
         toUpdate: false,
         taskId: ""
@@ -350,40 +352,43 @@ const Home = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchAllTask = async () => {
-            const graphQlQuery = `
-            mutation{
-                getTask(getTaskInfo:{
-                    userId: "${user.id}",
-                    catogary: "${heading}",
-                    showCompletedTask: ${showCompletedTask}
-                }){task, id}
-            }
-            `;
-            try {
-                const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
-                const baseObj = response.data.data.getTask;
-                if (baseObj.length > 0) {
-                    setTaskContent(baseObj)
-                }
-                else {
-                    setTaskContent([{ id: "initialId008", task: "Good Luck" }])
-                }
-            }
-            catch (error) {
-                console.log(error);
-                setShowMessage({
-                    ...showMessage,
-                    messageState: true,
-                    messageText: error.response.data.errors[0].message
-                })
-            }
-
+    const fetchAllTask = async () => {
+        const graphQlQuery = `
+        mutation{
+            getTask(getTaskInfo:{
+                userId: "${user.id}",
+                catogary: "${heading}",
+                showCompletedTask: ${showCompletedTask}
+            }){task, id}
         }
+        `;
+        try {
+            setShowSpinner(true);
+            const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
+            const baseObj = response.data.data.getTask;
+            if (baseObj.length > 0) {
+                setTaskContent(baseObj)
+            }
+            else {
+                setTaskContent([{ id: "initialId008", task: "Good Luck" }])
+            }
+            setShowSpinner(false);
+        }
+        catch (error) {
+            setShowSpinner(false);
+            setShowMessage({
+                ...showMessage,
+                messageState: true,
+                messageText: error.response.data.errors[0].message
+            })
+        }
+
+    }
+
+    useEffect(() => {
         fetchAllTask();
 
-    }, [heading, taskContent])
+    }, [heading])
 
     const inputChangeHandler = (e) => {
         e.target.name === "project" ? setProjectInputValue(e.target.value) : setTaskInputValue(e.target.value);
@@ -399,14 +404,18 @@ const Home = () => {
         }
         `
         try {
+            setShowSpinner(true);
             await axios.post("/graphql", { query: graphQlQuery }, Header)
             dispatch(USER_INFO({
                 ...user,
                 catogaries: [...user.catogaries, upperCaseInputValue]
             }))
             setProjectInputValue("");
+            setShowSpinner(false);
+            fetchAllTask();
         }
         catch (error) {
+            setShowSpinner(false);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
@@ -424,6 +433,7 @@ const Home = () => {
         }
         `
         try {
+            setShowSpinner(true);
             const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
             const baseObj = response.data.data.createTask;
             setTaskInputValue("");
@@ -433,9 +443,11 @@ const Home = () => {
             else {
                 setTaskContent(baseObj.task);
             }
-
+            setShowSpinner(false);
+            fetchAllTask();
         }
         catch (error) {
+            setShowSpinner(false);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
@@ -454,6 +466,7 @@ const Home = () => {
         }
         `;
         try {
+            setShowSpinner(true);
             await axios.post("/graphql", { query: graphQlQuery }, Header)
             setShowMessage({
                 ...showMessage,
@@ -466,8 +479,11 @@ const Home = () => {
                 taskId: ""
             })
             setTaskInputValue("");
+            setShowSpinner(false);
+            fetchAllTask();
         }
         catch (error) {
+            setShowSpinner(false);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
@@ -501,6 +517,7 @@ const Home = () => {
         }
         `;
         try {
+            setShowSpinner(true);
             const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
             const baseObj = response.data.data.deleteCatogary;
             const userInfo = {
@@ -514,9 +531,11 @@ const Home = () => {
                 messageState: true,
                 messageText: baseObj.message
             })
+            setShowSpinner(false);
 
         }
         catch (error) {
+            setShowSpinner(false);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
@@ -533,19 +552,24 @@ const Home = () => {
         }
         `;
         try {
+            setShowSpinner(true);
             const response = await axios.post("/graphql", { query: graphQlQuery }, Header)
             setShowMessage({
                 ...showMessage,
                 messageState: true,
                 messageText: response.data.data.deleteTask
             })
+            setShowSpinner(false);
+            fetchAllTask();
         }
         catch (error) {
+            setShowSpinner(false);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
                 messageText: error.response.data.errors[0].message
             })
+            setShowSpinner(false);
         }
     }
     const handleTaskEdit = async (taskId, task) => {
@@ -570,14 +594,18 @@ const Home = () => {
         }
         `;
         try {
+            setShowSpinner(true);
             const response = await axios.post("/graphql", { query: graphQlQuery }, Header);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
                 messageText: response.data.data.completeTask
             })
+            setShowSpinner(false);
+            fetchAllTask();
         }
         catch (error) {
+            setShowSpinner(false);
             setShowMessage({
                 ...showMessage,
                 messageState: true,
@@ -600,6 +628,7 @@ const Home = () => {
         <>
             <Nav />
             {showMessage.messageState ? <Message messageText={showMessage.messageText} showMessage={showMessage} setShowMessage={setShowMessage} /> : null}
+            {showSpinner ? <Spinner /> : null}
             <HomeContainer>
                 {showModal ? <Modal modalClickHandler={modalClickHandler} /> : null}
 
@@ -668,8 +697,8 @@ const Home = () => {
                                         {showCompletedTask
                                             ?
                                             <>
-                                                <RestartAltIcon className="home_container_task_screen_task_container_task_button_1" 
-                                                   onClick={() => handleTaskDone(value.id, false)}
+                                                <RestartAltIcon className="home_container_task_screen_task_container_task_button_1"
+                                                    onClick={() => handleTaskDone(value.id, false)}
                                                 />
                                                 <DeleteIcon className="home_container_task_screen_task_container_task_button_2"
                                                     onClick={() => handleTaskDelete(value.id)}

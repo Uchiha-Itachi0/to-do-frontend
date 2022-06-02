@@ -628,7 +628,10 @@ const Home = () => {
         <>
             <Nav />
             {showMessage.messageState ? <Message messageText={showMessage.messageText} showMessage={showMessage} setShowMessage={setShowMessage} /> : null}
-            {showSpinner ? <Spinner /> : null}
+            {showSpinner ? <>
+                <Modal />
+                <Spinner />
+            </> : null}
             <HomeContainer>
                 {showModal ? <Modal modalClickHandler={modalClickHandler} /> : null}
 

@@ -12,6 +12,8 @@ import { useDispatch } from 'react-redux';
 import { SHOW_MODAL } from '../../redux/Slice/modalSlice';
 import { USER_INFO } from '../../redux/Slice/user';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../Spinner';
+import Modal from '../modal';
 
 const SignUpContainer = styled.div`
 padding: 1em;
@@ -170,6 +172,7 @@ const SignUp = ({
     footerText,
     formFlipHandler
 }) => {
+    const [spinner, setSpinner] = useState(false);
     const [inputValue, setInputValue] = useState({
         signUp: {
             name: "",
@@ -232,7 +235,7 @@ const SignUp = ({
 
     const submitClickHandler = async (e) => {
         try {
-
+            setSpinner(true);
             if (e.target.innerText === "Sign Up") {
                 const graphqlQuery = `
             mutation{
@@ -305,8 +308,10 @@ const SignUp = ({
                 dispatch(SHOW_MODAL())
                 navigate(`${baseObj._id}/dashboard`);
             }
+            setSpinner(false);
         }
         catch (error) {
+            setSpinner(false);
             const message = error.response.data.errors[0].message;
             const statusCode = error.response.data.errors[0].status;
             setMessage({
@@ -321,6 +326,10 @@ const SignUp = ({
     }
     return (
         <SignUpContainer>
+            {spinner ? <>
+                <Modal />
+                <Spinner />
+            </> : null}
             <div className="sign_up_container_nav">
                 <h1 className="sign_up_container_logo">JAR</h1>
                 <CancelIcon onClick={() => closeFormHandler()} />

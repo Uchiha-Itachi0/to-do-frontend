@@ -5,6 +5,7 @@ const InputFieldContainer = styled.div`
 position: relative;
 input{
     width: -webkit-fill-available;
+    width: -moz-available;
     padding: .3em .5em;
     font-size: max(1.2vw, 1.2rem);
     background: var(--background);
